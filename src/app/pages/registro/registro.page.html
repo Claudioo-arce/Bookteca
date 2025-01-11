@@ -1,0 +1,27 @@
+<ion-header [translucent]="true">
+  <ion-toolbar>
+    <ion-title>Registro</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true">
+  <form>
+    <ion-item>
+      <ion-label position="floating"> Correo </ion-label>
+      <ion-input input type="email" name="email" required></ion-input>
+    </ion-item>
+
+    <ion-item>
+      <ion-label position="floating"> Contraseña </ion-label>
+      <ion-input input type="Password" name="Password" required></ion-input>
+    </ion-item>
+
+    <ion-item>
+      <ion-label position="floating"> Confirmar Contraseña </ion-label>
+      <ion-input input type="Password" name="ConfirmPassword" required></ion-input>
+    </ion-item>
+    
+    <ion-button type="submit" expand="block">Registrarse</ion-button>
+    <ion-button routerlink="/login" expand="block">Iniciar sesion</ion-button>
+  </form>  
+</ion-content>

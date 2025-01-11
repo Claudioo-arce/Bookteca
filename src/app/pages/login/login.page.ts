@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { AngularFireAuth } from '@angular/fire/compat/auth';
 import { Router } from '@angular/router'; // Importa el servicio Router
 
 @Component({
@@ -11,45 +12,31 @@ export class LoginPage implements OnInit {
   email: string = ''; // Correo del usuario
   password: string = ''; // Contraseña del usuario
 
-  constructor(private router: Router) { }
+  constructor(private afAuth: AngularFireAuth, private router: Router) { }
 
   ngOnInit() {}
 
-  onLogin() {
-    if (!this.validateEmail(this.email)) {
-      console.error('Correo inválido.');
-      alert('Por favor, ingresa un correo válido.');
-      return;
-    }
-
-    if (this.password.length < 6) {
-      console.error('Contraseña inválida.');
-      alert('La contraseña debe tener al menos 6 caracteres.');
-      return;
-    }
-
-    // Simula lógica de autenticación (puedes conectar a un backend aquí)
-    if (this.email === 'usuario@example.com' && this.password === '123456') {
-      console.log('Inicio de sesión exitoso:', {
-        email: this.email,
-        password: this.password,
-      });
+  async onLogin() {
+    try {
+      // Autenticación con Firebase
+      const userCredential = await this.afAuth.signInWithEmailAndPassword(
+        this.email,
+        this.password
+      );
+      console.log('Inicio de sesión exitoso:', userCredential);
       alert('¡Inicio de sesión exitoso!');
-      this.clearForm(); // Limpia los campos del formulario
-      this.router.navigate(['/chat']); // Redirige a la página chat
-    } else {
-      console.error('Credenciales incorrectas.');
-      alert('Correo o contraseña incorrectos.');
+
+      // Limpia los campos del formulario
+      this.clearForm();
+
+      // Redirige a la página "chat"
+      this.router.navigate(['/chat']);
+    } catch (error) {
+      const errorMessage = (error as { message: string }).message;
+      console.error('Error al iniciar sesión:', errorMessage);
+      alert('Correo o contraseña incorrectos. Por favor, inténtalo de nuevo.');
     }
   }
-
-  // Método para validar el formato del correo
-  validateEmail(email: string): boolean {
-    const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
-    return emailRegex.test(email);
-  }
-
-  // Método para limpiar los campos
   clearForm() {
     this.email = '';
     this.password = '';

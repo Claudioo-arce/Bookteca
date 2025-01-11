@@ -1,13 +1,22 @@
-<ion-header [translucent]="true">
+<ion-header>
   <ion-toolbar>
-    <ion-title>perfil</ion-title>
+    <ion-title>Perfil</ion-title>
   </ion-toolbar>
 </ion-header>
 
-<ion-content [fullscreen]="true">
-  <ion-header collapse="condense">
-    <ion-toolbar>
-      <ion-title size="large">perfil</ion-title>
-    </ion-toolbar>
-  </ion-header>
+<ion-content class="ion-padding">
+  <!-- Foto de perfil -->
+  <div class="profile-photo-container">
+    <img [src]="profilePhoto" alt="Foto de perfil" class="profile-photo" />
+  </div>
+
+  <!-- Opciones para cargar o tomar foto -->
+  <div class="button-group">
+    <ion-button expand="block" color="primary" (click)="takePhoto()">
+      Tomar una foto
+    </ion-button>
+    <ion-button expand="block" color="secondary" (click)="selectPhoto()">
+      Subir desde la galería
+    </ion-button>
+  </div>
 </ion-content>

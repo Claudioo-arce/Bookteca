@@ -1,9 +1,38 @@
 // This file can be replaced during build by using the `fileReplacements` array.
 // `ng build` replaces `environment.ts` with `environment.prod.ts`.
 // The list of file replacements can be found in `angular.json`.
+// Import the functions you need from the SDKs you need
+import { initializeApp } from "firebase/app";
+import { getAnalytics } from "firebase/analytics";
+// TODO: Add SDKs for Firebase products that you want to use
+// https://firebase.google.com/docs/web/setup#available-libraries
 
+// Your web app's Firebase configuration
+// For Firebase JS SDK v7.20.0 and later, measurementId is optional
+const firebaseConfig = {
+  apiKey: "AIzaSyCVFonimqWCgdKk_7RBj23ZFtsxG_m5acA",
+  authDomain: "bookteca-27e0a.firebaseapp.com",
+  projectId: "bookteca-27e0a",
+  storageBucket: "bookteca-27e0a.firebasestorage.app",
+  messagingSenderId: "45376823100",
+  appId: "1:45376823100:web:5a535879e4a35a44e68839",
+  measurementId: "G-P078HKZB2E"
+};
+
+// Initialize Firebase
+const app = initializeApp(firebaseConfig);
+const analytics = getAnalytics(app);
 export const environment = {
-  production: false
+  production: false,
+  firebase: {
+    apiKey: "AIzaSyCVFonimqWCgdKk_7RBj23ZFtsxG_m5acA",
+  authDomain: "bookteca-27e0a.firebaseapp.com",
+  projectId: "bookteca-27e0a",
+  storageBucket: "bookteca-27e0a.firebasestorage.app",
+  messagingSenderId: "45376823100",
+  appId: "1:45376823100:web:5a535879e4a35a44e68839",
+  measurementId: "G-P078HKZB2E"
+  },
 };
 
 /*

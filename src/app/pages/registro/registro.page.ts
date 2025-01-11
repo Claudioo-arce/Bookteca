@@ -1,23 +1,22 @@
 import { Component, OnInit } from '@angular/core';
+import { AngularFireAuth } from '@angular/fire/compat/auth';
 
 @Component({
   selector: 'app-registro',
   templateUrl: './registro.page.html',
   styleUrls: ['./registro.page.scss'],
-  standalone: false, 
+  standalone: false,
 })
 export class RegistroPage implements OnInit {
   email: string = ''; // Correo del usuario
   password: string = ''; // Contraseña del usuario
   confirmPassword: string = ''; // Confirmación de contraseña
 
-
-  constructor() { }
-
+  constructor(private afAuth: AngularFireAuth) {}
 
   ngOnInit() {}
 
-  onRegister() {
+  async onRegister() {
     if (!this.validateEmail(this.email)) {
       console.error('Correo inválido.');
       alert('Por favor, ingresa un correo válido.');
@@ -36,12 +35,27 @@ export class RegistroPage implements OnInit {
       return;
     }
 
-    // Aquí puedes agregar la lógica para guardar al usuario
-    console.log('Registro exitoso:', {
-      email: this.email,
-      password: this.password,
-    });
-    alert('¡Registro exitoso!');
+    // Crea un nuevo usuario con Firebase Authentication
+    try {
+      const userCredential = await this.afAuth.createUserWithEmailAndPassword(
+        this.email,
+        this.password
+      );
+      console.log('Usuario registrado:', userCredential);
+      alert('¡Usuario registrado exitosamente!');
+      this.clearForm();
+    } catch (error) {
+      const errorMessage = (error as { message: string }).message;
+      console.error('Error en el registro:', errorMessage);
+      alert('Error en el registro: ' + errorMessage);
+    }
+  }
+
+  // Método para limpiar los campos del formulario
+  clearForm() {
+    this.email = '';
+    this.password = '';
+    this.confirmPassword = '';
   }
 
   // Método para validar el formato del correo
@@ -51,4 +65,5 @@ export class RegistroPage implements OnInit {
   }
 }
 
+// import { Component, OnInit } from '@angular/core';
 

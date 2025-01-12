@@ -1,8 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { Camera, CameraResultType, CameraSource } from '@capacitor/camera';
-import { Router } from '@angular/router'; // Importa el Router
+import { Router } from '@angular/router';
 import { AngularFireAuth } from '@angular/fire/compat/auth';
 import { AngularFirestore } from '@angular/fire/compat/firestore';
+
 interface UserData {
   name: string;
   surname: string;
@@ -13,7 +14,7 @@ interface UserData {
   selector: 'app-perfil',
   templateUrl: './perfil.page.html',
   styleUrls: ['./perfil.page.scss'],
-  standalone: false, 
+  standalone: false,
 })
 export class PerfilPage implements OnInit {
   profilePhoto: string = 'assets/default-profile.png'; // Foto inicial predeterminada
@@ -22,94 +23,101 @@ export class PerfilPage implements OnInit {
   newPassword: string = ''; // Contraseña nueva
   confirmPassword: string = ''; // Confirmar contraseña nueva
 
-  constructor(private afAuth: AngularFireAuth, private firestore: AngularFirestore, private router: Router) { }
+  constructor(
+    private afAuth: AngularFireAuth,
+    private firestore: AngularFirestore,
+    private router: Router
+  ) {}
 
   ngOnInit() {
     this.loadUserData();
   }
 
- // Tomar una foto con la cámara
- async takePhoto() {
-  try {
-    const image = await Camera.getPhoto({
-      quality: 90,
-      allowEditing: false,
-      resultType: CameraResultType.DataUrl,
-      source: CameraSource.Camera,
-    });
+  async loadUserData() {
+    try {
+      const user = await this.afAuth.currentUser;
+      if (user) {
+        const userDoc = await this.firestore
+          .collection('users')
+          .doc(user.uid)
+          .get()
+          .toPromise();
 
-    this.profilePhoto = image.dataUrl!;
-  } catch (error) {
-    console.error('Error al tomar la foto:', error);
-  }
-}
+        const userData = userDoc?.data() as UserData;
 
-// Seleccionar una foto desde la galería
-async selectPhoto() {
-  try {
-    const image = await Camera.getPhoto({
-      quality: 90,
-      allowEditing: false,
-      resultType: CameraResultType.DataUrl,
-      source: CameraSource.Photos,
-    });
-
-    this.profilePhoto = image.dataUrl!;
-  } catch (error) {
-    console.error('Error al seleccionar la foto:', error);
-  }
-}
-
-async loadUserData() {
-  try {
-    const user = await this.afAuth.currentUser;
-    if (user) {
-      const userDoc = await this.firestore
-        .collection('users')
-        .doc(user.uid)
-        .get()
-        .toPromise();
-
-      const userData = userDoc?.data() as UserData;
-
-      if (userData) {
-        this.name = userData.name;
-        this.surname = userData.surname;
+        if (userData) {
+          this.name = userData.name;
+          this.surname = userData.surname;
+        }
       }
+    } catch (error) {
+      console.error('Error al cargar los datos del usuario:', error);
     }
-  } catch (error) {
-    console.error('Error al cargar los datos del usuario:', error);
-  }
-}
-
-// Validar que el nombre y el apellido no estén vacíos
-
-// Validar que las contraseñas coincidan
-passwordsMatch(): boolean {
-  return this.newPassword === this.confirmPassword;
-}
-
-// Manejar el envío del formulario
-onSubmit() {
-  if (!this.passwordsMatch()) {
-    alert('Las contraseñas no coinciden. Intenta nuevamente.');
-    return;
   }
 
-  console.log('Formulario enviado:');
-  console.log('Nombre:', this.name);
-  console.log('Apellido:', this.surname);
-  console.log('Nueva Contraseña:', this.newPassword);
+  async logout() {
+    try {
+      await this.afAuth.signOut();
+      console.log('Sesión cerrada');
+      this.router.navigate(['/login']); // Navega a la página de login
+    } catch (error) {
+      console.error('Error al cerrar sesión:', error);
+      alert('Error al cerrar sesión.');
+    }
+  }
 
-  alert('¡Cambios guardados exitosamente!');
+  async takePhoto() {
+    try {
+      const image = await Camera.getPhoto({
+        quality: 90,
+        allowEditing: false,
+        resultType: CameraResultType.DataUrl,
+        source: CameraSource.Camera,
+      });
 
-  // Limpia los campos después de guardar los cambios
-  this.newPassword = '';
-  this.confirmPassword = '';
-}
+      this.profilePhoto = image.dataUrl!;
+    } catch (error) {
+      console.error('Error al tomar la foto:', error);
+    }
+  }
 
- // Navegar al chat
- goToChat() {
-  this.router.navigate(['/tabs/chat']); // Navega a la página de chat
-}
+  async selectPhoto() {
+    try {
+      const image = await Camera.getPhoto({
+        quality: 90,
+        allowEditing: false,
+        resultType: CameraResultType.DataUrl,
+        source: CameraSource.Photos,
+      });
+
+      this.profilePhoto = image.dataUrl!;
+    } catch (error) {
+      console.error('Error al seleccionar la foto:', error);
+    }
+  }
+
+  passwordsMatch(): boolean {
+    return this.newPassword === this.confirmPassword;
+  }
+
+  onSubmit() {
+    if (!this.passwordsMatch()) {
+      alert('Las contraseñas no coinciden. Intenta nuevamente.');
+      return;
+    }
+
+    console.log('Formulario enviado:');
+    console.log('Nombre:', this.name);
+    console.log('Apellido:', this.surname);
+    console.log('Nueva Contraseña:', this.newPassword);
+
+    alert('¡Cambios guardados exitosamente!');
+
+    this.newPassword = '';
+    this.confirmPassword = '';
+  }
+
+  goToChat() {
+    this.router.navigate(['/tabs/chat']); // Navega a la página de chat
+  }
 }

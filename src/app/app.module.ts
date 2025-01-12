@@ -2,6 +2,7 @@ import { NgModule, } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { AngularFireModule } from '@angular/fire/compat';
 import { AngularFireAuthModule } from '@angular/fire/compat/auth';
+import { AngularFirestoreModule } from '@angular/fire/compat/firestore';
 import { RouteReuseStrategy } from '@angular/router';
 
 import { IonicModule, IonicRouteStrategy } from '@ionic/angular';
@@ -18,6 +19,7 @@ import { environment } from '../environments/environment';
     AppRoutingModule,
     AngularFireModule.initializeApp(environment.firebase), // Inicializa Firebase
     AngularFireAuthModule, // Módulo de autenticación
+    AngularFirestoreModule, // Módulo Firestore
   ],
   providers: [],
   bootstrap: [AppComponent],

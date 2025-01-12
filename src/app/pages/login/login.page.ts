@@ -30,7 +30,8 @@ export class LoginPage implements OnInit {
       this.clearForm();
 
       // Redirige a la página "chat"
-      this.router.navigate(['/chat']);
+      this.router.navigateByUrl('/tabs/chat', { replaceUrl: true });
+
     } catch (error) {
       const errorMessage = (error as { message: string }).message;
       console.error('Error al iniciar sesión:', errorMessage);
